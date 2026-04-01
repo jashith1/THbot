@@ -1,3 +1,3 @@
 class HelprService():
-    async def test():
+    async def test(self):
         return "Woah!!"

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Request
+from src.deps import HelprDep 
 
 router = APIRouter(
     prefix="/helpr",
@@ -6,8 +7,6 @@ router = APIRouter(
 )
 
 @router.get("/test")
-async def test(
-    request: Request,
-):
-    return "hi"
+async def test( request: Request, service: HelprDep, ):
+    return await service.test()
 

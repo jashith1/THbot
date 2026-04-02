@@ -1,14 +1,16 @@
 from src.utils.bot import client
-from src.utils.config import settings
 from src.exceptions.custom_exceptions import ChannelNotFound
 from src.schemas import TicketDetails
+from src.messages import TicketMessages
+from src.utils.config import settings
 
 class HelprService():
     async def ping_mentor(self, ticket_details: TicketDetails):
         channel = client.get_channel(settings.MENTOR_CHANNEL_ID)
         if channel:
             #roles need to be prefixed with &
-            await channel.send(f"<@&{settings.MENTOR_ROLE_ID}>\nThere's a new ticket from {ticket_details.name}!\nThey want to know: {ticket_details.issue}.\nThey're located at: {ticket_details.location} and their phone number is {ticket_details.phone_number}.")
+            ticket_message = TicketMessages.ticket_created(ticket_details)
+            await channel.send(ticket_message)
             return { "status_code": 200, "message": "Message sent to mentors!" }
         else:
             raise ChannelNotFound(str(settings.MENTOR_CHANNEL_ID))

@@ -1,5 +1,6 @@
+from discord import TextChannel
 from src.utils.bot import client
-from src.exceptions.custom_exceptions import ChannelNotFound
+from src.exceptions.custom_exceptions import ChannelNotFound, InvalidChannelType
 from src.schemas import TicketDetails
 from src.embeds import TicketEmbeds
 from src.utils.config import settings
@@ -9,6 +10,9 @@ class HelprService():
         channel = client.get_channel(settings.MENTOR_CHANNEL_ID)
         if not channel:
             raise ChannelNotFound(str(settings.MENTOR_CHANNEL_ID))
+
+        if not isinstance(channel, (TextChannel)):
+            raise InvalidChannelType("text channel", str(settings.MENTOR_CHANNEL_ID))
 
         mentor_ping = f"<@&{settings.MENTOR_ROLE_ID}>"
         embed = TicketEmbeds.ticket_created(ticket_details)

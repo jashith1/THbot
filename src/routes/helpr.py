@@ -11,4 +11,3 @@ router = APIRouter(
 @router.post("/ping-mentor")
 async def ping_mentor( ticket_details: TicketDetails, service: HelprDep, ):
     return await service.ping_mentor(ticket_details)
-

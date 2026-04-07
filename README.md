@@ -1,5 +1,6 @@
 # Buzz
 A discord bot to be used in TAMUhack! 
+
 Currently it just pings mentors in a private channel on the discord server anytime theres a new ticket on [helpr](https://github.com/tamuhack-org/helpr).
 
 Create the required `.env` file

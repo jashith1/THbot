@@ -2,7 +2,8 @@ import discord
 from src.utils.bot import client
 from src.exceptions.custom_exceptions import ChannelNotFound, InvalidChannelType
 from src.schemas import TicketDetails
-from src.embeds import TicketEmbeds
+from src.views.embeds import TicketEmbeds
+from src.views.buttons import TicketButtons
 from src.utils.config import settings
 
 class HelprService():
@@ -16,6 +17,7 @@ class HelprService():
 
         mentor_ping = f"<@&{settings.MENTOR_ROLE_ID}>"
         embed = TicketEmbeds.ticket_created(ticket_details)
+        view = TicketButtons(ticket_details)
 
-        await channel.send(content=mentor_ping, embed=embed)
+        await channel.send(content=mentor_ping, embed=embed, view=view)
         return { "status_code": 200, "message": "Message sent to mentors!" }

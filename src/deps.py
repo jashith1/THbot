@@ -1,3 +1,4 @@
+import time
 import hashlib
 import hmac
 from fastapi import Request
@@ -20,6 +21,10 @@ async def verify_hmac(request: Request):
 
     if not request_timestamp:
         raise Unauthorized("Missing HMAC timestamp header")
+
+    #make sure request is not older than 5 min
+    if abs(time.time() - float(request_timestamp)) > 300:
+        raise Unauthorized("Provided HMAC timestamp is either too old or invalid")
 
     request_body_raw = await request.body()
     request_body = request_body_raw.decode('utf-8')

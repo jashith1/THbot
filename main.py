@@ -1,11 +1,19 @@
 from fastapi import FastAPI
 import asyncio
+import logging
 from contextlib import asynccontextmanager
 
 from src.utils.bot import client
 from src.utils.config import settings
 
 from src.routes import helpr
+
+LOG_LEVEL = settings.LOG_LEVEL.upper()
+logging.basicConfig(
+    level=LOG_LEVEL,
+    format="%(levelname)s:  %(asctime)s - %(name)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

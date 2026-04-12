@@ -2,12 +2,16 @@ import hashlib
 import json
 import hmac
 import time
+import logging
 from fastapi import Request
 
 from src.exceptions.custom_exceptions import Unauthorized
 from src.utils.config import settings
 
+logger = logging.getLogger(__name__)
+
 async def verify_hmac(request: Request):
+    logger.debug("Verifying hmac")
     if settings.ENV == "development":
         return
 
@@ -32,13 +36,14 @@ async def verify_hmac(request: Request):
         key=settings.HMAC_SECRET.encode("utf-8"), msg=msg, digestmod=hashlib.sha256
     ).hexdigest()
 
+    logger.debug(f"created hmac is: {new_hmac} and request hmac is: {request_hmac}")
+
     if not hmac.compare_digest(request_hmac, new_hmac):
         raise Unauthorized("HMAC Signature Does not match")
 
 
 def create_hmac(data: dict):
     #TODO: look into if keys should be sorted?
-    print("creating")
     json_payload = json.dumps(data, separators=(',', ':'))
     hmac_timestamp = time.time()
     msg = f"{hmac_timestamp}{json_payload}".encode("utf-8")
@@ -46,6 +51,8 @@ def create_hmac(data: dict):
     hmac_signature = hmac.new(
         key=settings.HMAC_SECRET.encode("utf-8"), msg=msg, digestmod=hashlib.sha256
     ).hexdigest()
+
+    logger.debug(f"Created hmac is {hmac_signature} at timestamp: {hmac_timestamp}")
 
     return { "x-authorization-timestamp": str(hmac_timestamp), "x-authorization-content-hmac": hmac_signature }
 

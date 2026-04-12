@@ -1,8 +1,11 @@
+import logging
 import httpx
 import discord
 from src.schemas import TicketDetails
 from src.utils.config import settings
 from src.utils.crypto import create_hmac
+
+logger = logging.getLogger(__name__)
 
 class TicketButtons(discord.ui.View):
     def __init__(self, ticket_details: TicketDetails):
@@ -19,6 +22,8 @@ class TicketButtons(discord.ui.View):
     async def claim(self, interaction: discord.Interaction, button: discord.ui.Button):
         userId = str(interaction.user.id)
         ticketId = self.ticket_details.ticketId
+        logger.debug(f"Attemping to claim ticket: {ticketId} for user: {userId}")
+
         url = f"{settings.HELPR_URL}/api/tickets/claim"
         payload = { "discordId": userId, "ticketId": ticketId }
         headers = create_hmac(payload)

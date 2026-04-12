@@ -1,4 +1,5 @@
 import hashlib
+import json
 import hmac
 import time
 from fastapi import Request
@@ -10,8 +11,8 @@ async def verify_hmac(request: Request):
     if settings.ENV == "development":
         return
 
-    request_hmac = request.headers.get("X-Authorization-Content-HMAC")
-    request_timestamp = request.headers.get("X-Authorization-Timestamp")
+    request_hmac = request.headers.get("x-authorization-content-hmac")
+    request_timestamp = request.headers.get("x-authorization-timestamp")
 
     if not request_hmac:
         raise Unauthorized("Missing HMAC signature header")
@@ -36,12 +37,15 @@ async def verify_hmac(request: Request):
 
 
 def create_hmac(data: dict):
+    #TODO: look into if keys should be sorted?
+    print("creating")
+    json_payload = json.dumps(data, separators=(',', ':'))
     hmac_timestamp = time.time()
-    msg = f"{hmac_timestamp}{data}".encode("utf-8")
+    msg = f"{hmac_timestamp}{json_payload}".encode("utf-8")
 
     hmac_signature = hmac.new(
         key=settings.HMAC_SECRET.encode("utf-8"), msg=msg, digestmod=hashlib.sha256
     ).hexdigest()
 
-    return { "X-Authorization-Timestamp": hmac_timestamp, "X-Authorization-Content-HMAC": hmac_signature }
+    return { "x-authorization-timestamp": str(hmac_timestamp), "x-authorization-content-hmac": hmac_signature }
 

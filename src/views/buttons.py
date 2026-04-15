@@ -53,7 +53,7 @@ class TicketButtons(discord.ui.View):
             data = response.json()
             logger.info(f"Claim ticket post request result: {response.status_code}")
 
-            if(data.get("code") == "DISCORD_NOT_LINKED"):
+            if data.get("code") == "DISCORD_NOT_LINKED":
                 #discord account not linked
                 link_url = f"{settings.HELPR_URL}/link/discord"
                 #send private followup with url to link account
@@ -63,7 +63,7 @@ class TicketButtons(discord.ui.View):
                 )
                 return
 
-            elif(response.status_code != 200):
+            elif response.status_code != 200:
                 #generic failure message
                 #TODO might not want to be a global edit?
                 button.disabled = True

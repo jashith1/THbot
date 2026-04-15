@@ -24,7 +24,7 @@ class TicketButtons(discord.ui.View):
         ticketId = self.ticket_details.ticketId
         logger.debug(f"Attemping to claim ticket: {ticketId} for user: {userId}")
 
-        await interaction.response.defer(ephemeral=True)
+        await interaction.response.defer(ephemeral=True) #let discord know this might take a while and not timeout
 
         url = f"{settings.HELPR_URL}/api/tickets/claim"
         payload = { "discordId": userId, "ticketId": ticketId }

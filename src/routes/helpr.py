@@ -9,7 +9,6 @@ router = APIRouter(
     dependencies=[Depends(verify_hmac)],
 )
 
-#TODO: Need to add some kinda authentication
 @router.post("/ping-mentor")
 async def ping_mentor( ticket_details: TicketDetails, service: Helpr, ):
     return await service.ping_mentor(ticket_details)

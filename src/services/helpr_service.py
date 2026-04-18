@@ -11,12 +11,14 @@ logger = logging.getLogger(__name__)
 
 class HelprService():
     async def ping_mentor(self, ticket_details: TicketDetails):
-        logger.debug("Attemping to ping mentors")
+        logger.info("Attemping to ping mentors")
         channel = client.get_channel(settings.MENTOR_CHANNEL_ID)
         if not channel:
+            logger.info("Provided mentor channel ID not found")
             raise ChannelNotFound(str(settings.MENTOR_CHANNEL_ID))
 
         if not isinstance(channel, (discord.TextChannel)):
+            logger.info("Provided mentor channel is not a text channel")
             raise InvalidChannelType("text channel", str(settings.MENTOR_CHANNEL_ID))
 
         mentor_ping = f"<@&{settings.MENTOR_ROLE_ID}>"
